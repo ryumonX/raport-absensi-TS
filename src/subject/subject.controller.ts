@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
