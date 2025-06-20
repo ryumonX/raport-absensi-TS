@@ -5,12 +5,12 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 
 @Injectable()
 export class AttendanceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async scanByQrCode(qrcode: string) {
     const user = await this.prisma.user.findUnique({
       where: { qrcode },
-      include: { class: true }, 
+      include: { class: true },
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -24,7 +24,7 @@ export class AttendanceService {
         time: now,
         method: 'qrcode',
         status: 'present',
-        class: user.class?.name ?? 'Unknown', 
+        class: user.class?.name ?? 'Unknown',
       },
     });
   }
@@ -35,16 +35,33 @@ export class AttendanceService {
     });
   }
 
-  async findAll() {
-    return this.prisma.attendance.findMany({
+  async findAll(page: number = 1, limit: number = 10) {
+  const skip = (page - 1) * limit;
+
+  const [data, total] = await this.prisma.$transaction([
+    this.prisma.attendance.findMany({
       include: {
         user: true,
       },
       orderBy: {
         time: 'desc',
       },
-    });
-  }
+      skip,
+      take: limit,
+    }),
+    this.prisma.attendance.count(),
+  ]);
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    },
+  };
+}
+
 
   async findOne(id: number) {
     const attendance = await this.prisma.attendance.findUnique({
@@ -59,9 +76,17 @@ export class AttendanceService {
   async update(id: number, updateAttendanceDto: UpdateAttendanceDto) {
     return this.prisma.attendance.update({
       where: { id },
-      data: updateAttendanceDto,
+      data: {
+        userId: updateAttendanceDto.userId,
+        date: updateAttendanceDto.date,
+        time: updateAttendanceDto.time,
+        method: updateAttendanceDto.method,
+        status: updateAttendanceDto.status,
+        class: updateAttendanceDto.class,
+      },
     });
   }
+
 
   async remove(id: number) {
     return this.prisma.attendance.delete({

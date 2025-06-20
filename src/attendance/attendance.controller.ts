@@ -1,11 +1,11 @@
 import {
-  Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe
+  Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe,Query
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 
-@Controller('attendance')
+@Controller('attendances')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) { }
 
@@ -19,11 +19,26 @@ export class AttendanceController {
     return this.attendanceService.getTodayAttendance();
   }
 
+  @Post()
+  async create(@Body() createAttendanceDto: CreateAttendanceDto) {
+    const attendance = await this.attendanceService.create(createAttendanceDto);
+    return {
+      message: 'Attendance successfully created',
+      data: attendance,
+    };
+  }
+
 
   @Get()
-  findAll() {
-    return this.attendanceService.findAll();
-  }
+  findAll(
+  @Query('page') page: string = '1',
+  @Query('limit') limit: string = '10',
+) {
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit);
+  return this.attendanceService.findAll(pageNumber, limitNumber);
+}
+
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
