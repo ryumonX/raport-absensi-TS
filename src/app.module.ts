@@ -9,9 +9,10 @@ import { ClassModule } from './class/class.module';
 import { GradeModule } from './grade/grade.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { SubjectModule } from './subject/subject.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, QrModule, AttendanceModule, UserModule, ClassModule, GradeModule, TeacherModule, SubjectModule],
+  imports: [PrismaModule, QrModule, AttendanceModule, UserModule, ClassModule, GradeModule, TeacherModule, SubjectModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
