@@ -5,14 +5,55 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(dto: CreateUserDto) {
     return this.prisma.user.create({ data: dto });
   }
 
-  async findAll() {
-    return this.prisma.user.findMany();
+  async findAll(page = 1, limit = 10) {
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { id: 'asc' }, // opsional: bisa diganti ke createdAt jika ada
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async findAllStudents(page = 1, limit = 10) {
+    const where = { role: 'student' };
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { id: 'asc' },
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

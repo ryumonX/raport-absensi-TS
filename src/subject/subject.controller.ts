@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
@@ -6,7 +6,7 @@ import { AssignTeacherDto } from './dto/assign-teacher.dto';
 
 @Controller('subjects')
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) {}
+  constructor(private readonly subjectService: SubjectService) { }
 
   @Post()
   create(@Body() dto: CreateSubjectDto) {
@@ -14,9 +14,13 @@ export class SubjectController {
   }
 
   @Get()
-  findAll() {
-    return this.subjectService.findAll();
+  findAll(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10'
+  ) {
+    return this.subjectService.findAll(Number(page), Number(limit));
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

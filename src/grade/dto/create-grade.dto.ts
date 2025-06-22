@@ -1,9 +1,8 @@
-// create-grade.dto.ts
 export class CreateGradeDto {
   userId: number;
   subjectId: number;
-  semester: string;
   teacherId: number;
+  semester: string;
   score: number;
-  remarks?: string;
+  remarks?: string | null;
 }

@@ -16,19 +16,35 @@ export class SubjectService {
     });
   }
 
-  async findAll() {
-    return this.prisma.subject.findMany({
-      include: {
-        teachers: {
-          include: {
-            user: {
-              select: { id: true, name: true }
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.subject.findMany({
+        skip,
+        take: limit,
+        include: {
+          teachers: {
+            include: {
+              user: {
+                select: { id: true, name: true }
+              }
             }
-          }
-        },
-        grades: true
+          },
+          grades: true
+        }
+      }),
+      this.prisma.subject.count()
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit
       }
-    });
+    };
   }
 
   async findOne(id: number) {
