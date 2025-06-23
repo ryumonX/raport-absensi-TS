@@ -8,14 +8,19 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  name       String
-  email      String       @unique
-  password   String
-  role       String
-  qrcode     String       @unique @default(uuid())
-  classId    Int?
-  class      Class?       @relation(fields: [classId], references: [id])
+  id                 Int         @id @default(autoincrement())
+  name               String
+  email              String      @unique
+  password           String
+  role               String
+  qrcode             String      @unique @default(uuid())
+  classId            Int?
+  createdAt          DateTime    @default(now())
+  destinationCountry String?
+  dateOfBirth        DateTime?
+  phoneNumber        String?
+
+  class      Class?             @relation(fields: [classId], references: [id])
   attendance Attendance[]
   grades     Grade[]
   teacher    Teacher?
