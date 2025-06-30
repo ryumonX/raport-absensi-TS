@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+// import { startOfWeek, addDays } from 'date-fns';
+import { startOfWeek, addDays } from 'date-fns';
 
 @Injectable()
 export class AttendanceService {
@@ -36,31 +38,31 @@ export class AttendanceService {
   }
 
   async findAll(page: number = 1, limit: number = 10) {
-  const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-  const [data, total] = await this.prisma.$transaction([
-    this.prisma.attendance.findMany({
-      include: {
-        user: true,
-      },
-      orderBy: {
-        time: 'desc',
-      },
-      skip,
-      take: limit,
-    }),
-    this.prisma.attendance.count(),
-  ]);
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.attendance.findMany({
+        include: {
+          user: true,
+        },
+        orderBy: {
+          time: 'desc',
+        },
+        skip,
+        take: limit,
+      }),
+      this.prisma.attendance.count(),
+    ]);
 
-  return {
-    data,
-    meta: {
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    },
-  };
-}
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
 
 
   async findOne(id: number) {
@@ -146,5 +148,70 @@ export class AttendanceService {
         time: 'asc',
       },
     });
+  }
+
+  // Menghitung total user yang absen hari ini
+  async getTotalAttendanceToday() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const total = await this.prisma.attendance.count({
+      where: {
+        date: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    });
+
+    return { total };
+  }
+
+  // Menghitung total user yang absen antara Senin - Jumat minggu ini
+  async getTotalAttendanceThisWeek() {
+    const today = new Date();
+    const monday = startOfWeek(today, { weekStartsOn: 1 }); // Senin
+
+    let weeklyTotal = 0;
+    const result: { day: string; total: number }[] = [];
+
+    for (let i = 0; i < 5; i++) {
+      const currentDay = addDays(monday, i);
+
+      const start = new Date(currentDay);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(currentDay);
+      end.setHours(23, 59, 59, 999);
+
+      const count = await this.prisma.attendance.count({
+        where: {
+          date: {
+            gte: start,
+            lte: end,
+          },
+        },
+      });
+
+      weeklyTotal += count;
+
+      result.push({
+        day: start.toLocaleDateString('en-US', { weekday: 'long' }),
+        total: count,
+      });
+    }
+
+    return {
+      total: weeklyTotal,
+      daily: result,
+      period: {
+        from: monday,
+        to: addDays(monday, 4),
+      },
+    };
+
   }
 }

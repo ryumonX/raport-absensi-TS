@@ -31,6 +31,16 @@ export class UserController {
     return this.userService.findAllStudents(+page, +limit);
   }
 
+  @Get('total-students')
+  getTotalStudents() {
+    return this.userService.getTotalStudents();
+  }
+
+  @Get('total-teachers')
+  getTotalTeachers() {
+    return this.userService.getTotalTeachers();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);

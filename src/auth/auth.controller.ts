@@ -32,7 +32,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return { message: 'Login berhasil', user: { id: user.id, name: user.name, role: user.role } };
+    return { message: 'Login berhasil', token, user: { id: user.id, name: user.name, role: user.role, email: user.email } };
   }
 
   @Post('register')

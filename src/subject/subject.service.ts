@@ -75,6 +75,12 @@ export class SubjectService {
     return subject;
   }
 
+  
+  async getTotalSubjects() {
+    const total = await this.prisma.subject.count();
+    return { total };
+  }
+
   async update(id: number, dto: UpdateSubjectDto) {
     return this.prisma.subject.update({
       where: { id },

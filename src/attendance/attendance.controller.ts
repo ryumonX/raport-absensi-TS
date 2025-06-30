@@ -27,6 +27,17 @@ export class AttendanceController {
       data: attendance,
     };
   }
+  
+   @Get('total-today')
+  getTotalAttendanceToday() {
+    return this.attendanceService.getTotalAttendanceToday();
+  }
+
+  @Get('total-this-week')
+  getTotalAttendanceThisWeek() {
+    return this.attendanceService.getTotalAttendanceThisWeek();
+  }
+
 
 
   @Get()

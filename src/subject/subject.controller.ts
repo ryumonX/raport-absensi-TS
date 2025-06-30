@@ -21,11 +21,17 @@ export class SubjectController {
     return this.subjectService.findAll(Number(page), Number(limit));
   }
 
+  @Get('total')
+  getTotalSubjects() {
+    return this.subjectService.getTotalSubjects();
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.subjectService.findOne(+id);
   }
+
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateSubjectDto) {

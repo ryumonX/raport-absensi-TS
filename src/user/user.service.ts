@@ -67,6 +67,22 @@ export class UserService {
     };
   }
 
+  async getTotalStudents() {
+    const total = await this.prisma.user.count({
+      where: { role: 'student' },
+    });
+
+    return { total };
+  }
+
+  async getTotalTeachers() {
+    const total = await this.prisma.user.count({
+      where: { role: 'teacher' },
+    });
+
+    return { total };
+  }
+
   async findOne(id: number) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
