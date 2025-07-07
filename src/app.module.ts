@@ -10,9 +10,10 @@ import { GradeModule } from './grade/grade.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { SubjectModule } from './subject/subject.module';
 import { AuthModule } from './auth/auth.module';
+import { GoogleSheetModule } from './google-sheet/google-sheet.module';
 
 @Module({
-  imports: [PrismaModule, QrModule, AttendanceModule, UserModule, ClassModule, GradeModule, TeacherModule, SubjectModule, AuthModule],
+  imports: [PrismaModule, QrModule, AttendanceModule, UserModule, ClassModule, GradeModule, TeacherModule, SubjectModule, AuthModule, GoogleSheetModule],
   controllers: [AppController],
   providers: [AppService],
 })
