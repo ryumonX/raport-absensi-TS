@@ -38,4 +38,12 @@ export class CreateUserDto {
   @IsOptional()
   @IsInt()
   classId?: number;
+
+  @IsOptional()
+  @IsString()
+  jobName?: string;
+
+  @IsOptional()
+  @IsInt()
+  progressNumber?: number;
 }

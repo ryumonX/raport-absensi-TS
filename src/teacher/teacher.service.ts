@@ -4,7 +4,7 @@ import { CreateTeacherDto } from './dto/create-teacher.dto';
 
 @Injectable()
 export class TeacherService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(dto: CreateTeacherDto) {
     const user = await this.prisma.user.findUnique({ where: { id: dto.userId } });
@@ -21,11 +21,16 @@ export class TeacherService {
 
   async findAll() {
     return this.prisma.teacher.findMany({
+      where: {
+        user: {
+          role: 'teacher'
+        }
+      },
       include: {
-        user: true,
-        subjects: true,
-      }
-    });
+          user: true,
+          subjects: true,
+        }
+      });
   }
 
   async findOne(id: number) {

@@ -11,9 +11,24 @@ import { TeacherModule } from './teacher/teacher.module';
 import { SubjectModule } from './subject/subject.module';
 import { AuthModule } from './auth/auth.module';
 import { GoogleSheetModule } from './google-sheet/google-sheet.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PrismaModule, QrModule, AttendanceModule, UserModule, ClassModule, GradeModule, TeacherModule, SubjectModule, AuthModule, GoogleSheetModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, 
+    }),
+    PrismaModule,
+    QrModule,
+    AttendanceModule,
+    UserModule,
+    ClassModule,
+    GradeModule,
+    TeacherModule,
+    SubjectModule,
+    AuthModule,
+    GoogleSheetModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
