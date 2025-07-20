@@ -9,12 +9,18 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
 
-
+  // Enable CORS untuk FE (ganti domain sesuai host FE-mu di Railway)
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: 'https://absen-dwidelta.up.railway.app', // FE kamu
     credentials: true,
   });
+
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(4000); 
+
+  // Dengerin di PORT dari Railway (atau fallback ke 8080 pas lokal dev)
+  const port = process.env.PORT || 8080;
+  await app.listen(port);
+  console.log(`🚀 Server running on http://localhost:${port}`);
 }
+
 bootstrap();
