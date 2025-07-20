@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE `user` ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    ADD COLUMN `dateOfBirth` DATETIME(3) NULL,
-    ADD COLUMN `destinationCountry` VARCHAR(191) NULL,
-    ADD COLUMN `phoneNumber` VARCHAR(191) NULL;
