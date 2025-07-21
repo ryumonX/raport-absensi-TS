@@ -11,7 +11,11 @@ async function bootstrap() {
 
   // Enable CORS untuk FE (ganti domain sesuai host FE-mu di Railway)
   app.enableCors({
-    origin: 'https://absen-dwidelta.up.railway.app', // FE kamu
+    origin: [
+      'https://absen-dwidelta.up.railway.app',
+      'https://student-ui.up.railway.app',
+      'http://localhost:3000',
+    ], // FE kamu
     credentials: true,
   });
 
