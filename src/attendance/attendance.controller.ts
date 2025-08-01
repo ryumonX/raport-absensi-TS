@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe,Query
+  Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, Query
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
@@ -27,8 +27,8 @@ export class AttendanceController {
       data: attendance,
     };
   }
-  
-   @Get('total-today')
+
+  @Get('total-today')
   getTotalAttendanceToday() {
     return this.attendanceService.getTotalAttendanceToday();
   }
@@ -38,18 +38,20 @@ export class AttendanceController {
     return this.attendanceService.getTotalAttendanceThisWeek();
   }
 
-
+  @Get('students')
+  getAllStudents() {
+    return this.attendanceService.findAllStudents();
+  }
 
   @Get()
   findAll(
-  @Query('page') page: string = '1',
-  @Query('limit') limit: string = '10',
-) {
-  const pageNumber = parseInt(page);
-  const limitNumber = parseInt(limit);
-  return this.attendanceService.findAll(pageNumber, limitNumber);
-}
-
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ) {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    return this.attendanceService.findAll(pageNumber, limitNumber);
+  }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {

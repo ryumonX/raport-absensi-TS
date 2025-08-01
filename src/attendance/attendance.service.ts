@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
-// import { startOfWeek, addDays } from 'date-fns';
 import { startOfWeek, addDays } from 'date-fns';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AttendanceService {
@@ -64,6 +64,16 @@ export class AttendanceService {
     };
   }
 
+  async findAllStudents(): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: {
+        role: 'student',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 
   async findOne(id: number) {
     const attendance = await this.prisma.attendance.findUnique({
